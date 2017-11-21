@@ -21,6 +21,7 @@
   })
   for (let org of orgs) {
     let repos = []
+    console.log(`Getting all repos for ${org}`)
     try {
       let res = await github.repos.getForOrg({
         org
@@ -35,7 +36,9 @@
       process.exit(1)
     }
     console.log(`Got ${repos.length} for ${org}`)
+    let currentIteration = 1
     for (let repo of repos) {
+      console.log(`${currentIteration}/${repos.length} ${repo.full_name}`)
       try {
         const teamsRes = await github.repos.getTeams({
           owner: repo.owner.login,
@@ -44,6 +47,7 @@
       } catch (err) {
         console.log(`https://github.com/${repo.full_name}/settings/collaboration`)
       }
+      currentIteration = currentIteration + 1
     }
   }
 })()
