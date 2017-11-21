@@ -4,8 +4,7 @@
     'ipfs-shipyard',
     'libp2p',
     'multiformats',
-    'ipld',
-    'gxed'
+    'ipld'
   ]
   const authKey = process.env.GITHUB_TOKEN
   if (!authKey) {
