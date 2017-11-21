@@ -13,7 +13,7 @@
   }
   var GitHubApi = require('github')
 
-  var github = new GitHubApi({debug: true})
+  var github = new GitHubApi()
 
   github.authenticate({
     type: 'token',
