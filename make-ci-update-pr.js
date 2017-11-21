@@ -12,6 +12,7 @@
     await exec.shell(`cp -r configs//* ${name}`)
     try {
       await exec.shell(`cd ${name} && git diff-files --quiet`)
+      await exec.shell(`cd ${name} && test -z "$(git ls-files --others)"`)
       console.log(`No changes for ${repo}`)
     } catch (err) {
       await exec.shell(`cd ${name} && git checkout -b automatic-ci-script-update`)
