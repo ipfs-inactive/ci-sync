@@ -7,6 +7,7 @@
 
 * `ci-team-for-all-repos.js` goes through all repos for an org and makes sure there is a team called `ci` with access to all repos
 * `make-ci-update-pr.js` clones all repos, adds the ci files from `config/` and creates a PR from that
+* `get-repos-with-missing-admin-team.js` checks what repos don't have the Admin team
 
 ### `ci-team-for-all-repos.js`
 
@@ -24,6 +25,16 @@ copies over the files from `config/` into the repository, then adds all changes,
 creates a branch with changes and pushes it. Once done, it opens the PR view
 for submitting the PR (I know! Not entierely automatic, because dealing with
 Github Files via the API turned out to be a complete hassle, semi-automatic ftw).
+
+### `get-repos-with-missing-admin-team.js`
+
+Checks if the current authenticated user has access to all repos. If user token
+doesn't, it outputs a link where you can fix the permissions issue.
+
+```
+# Token from user will be used to judge if user has access or not
+GITHUB_TOKEN=XXX node get-repos-with-missing-admin-team.js
+```
 
 ## Internals
 
