@@ -1,27 +1,43 @@
 (async () => {
   const opn = require('opn')
   const exec = require('execa')
-  const repos = require('./repositories.json')
 
-  for (let repo of repos) {
+  const printAndRun = (cmd) => {
+    console.log('=> ' + cmd)
+    return exec.shell(cmd, {shell: 'bash'})
+  }
+
+  const createPRFor = async function(repo) {
     const owner = repo.split('/')[0]
     const name = repo.split('/')[1]
 
-    await exec.shell(`rm -rf ${name}`)
-    await exec.shell(`git clone git@github.com:${owner}/${name}.git`)
-    await exec.shell(`cp -r configs//* ${name}`)
+    await printAndRun(`rm -rf ${name}`)
+    await printAndRun(`git clone git@github.com:${owner}/${name}.git`)
+    await printAndRun(`shopt -s dotglob && cp -r configs//* ${name}`)
     try {
-      await exec.shell(`cd ${name} && git diff-files --quiet`)
-      await exec.shell(`cd ${name} && test -z "$(git ls-files --others)"`)
+      await printAndRun(`cd ${name} && git diff-files --quiet`)
+      await printAndRun(`cd ${name} && test -z "$(git ls-files --others)"`)
       console.log(`No changes for ${repo}`)
     } catch (err) {
-      await exec.shell(`cd ${name} && git checkout -b automatic-ci-script-update`)
-      await exec.shell(`cd ${name} && git add .`)
-      await exec.shell(`cd ${name} && git commit -m "Updating CI files" -m "This commit updates all CI scripts to the latest version"`)
-      await exec.shell(`cd ${name} && git push origin automatic-ci-script-update --force`)
+      await printAndRun(`cd ${name} && git checkout -b automatic-ci-script-update`)
+      await printAndRun(`cd ${name} && git add .`)
+      await printAndRun(`cd ${name} && git commit -m "Updating CI files" -m "This commit updates all CI scripts to the latest version"`)
+      await printAndRun(`cd ${name} && git push origin automatic-ci-script-update --force`)
       console.log(`Opening PR view for ${repo}`)
-      opn(`https://github.com/${owner}/${name}/compare/automatic-ci-script-update?expand=1`)
+      // opn(`https://github.com/${owner}/${name}/compare/automatic-ci-script-update?expand=1`)
     }
-    await exec.shell(`rm -rf ${name}`)
+    await printAndRun(`rm -rf ${name}`)
   }
+
+  const repo = process.argv[2]
+  if (!repo) {
+    console.log('Missing repository as first argument, taking repos from ./repositories.json')
+    const repos = require('./repositories.json')
+    for (let repo of repos) {
+      createPRFor(repo)
+    }
+  } else {
+    createPRFor(repo)
+  }
+
 })()
