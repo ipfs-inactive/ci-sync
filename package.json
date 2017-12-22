@@ -6,6 +6,9 @@
  "scripts": {
   "start": "node start.js"
  },
+ "engines": {
+   "node": "^8.2.0"
+ },
  "dependencies": {
   "chalk": "^2.3.0",
   "execa": "^0.8.0",
