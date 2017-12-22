@@ -145,7 +145,8 @@ async function update () {
       className = CODE_PASSING_PR
     }
     const repoLink = `<a href="https://github.com/${name}" target="_blank">${name}</a>`
-    reposHTML = reposHTML + `<tr class="${className}"><td>${repoLink}</td><td>${r.jenkinsMaster}</td><td>${r.jenkinsPR}</td></tr>`
+    const jenkinsLink = `<a href="https://ci.ipfs.team/job/${r.repo.org}/job/${r.repo.name}" target="_blank">Jenkins</a>`
+    reposHTML = reposHTML + `<tr class="${className}"><td>${jenkinsLink} - ${repoLink}</td><td>${r.jenkinsMaster}</td><td>${r.jenkinsPR}</td></tr>`
   })
   const newTemplate = template.replace('{{ROWS}}', reposHTML)
   fs.writeFileSync('./ci-status.html', newTemplate)
