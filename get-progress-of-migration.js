@@ -39,7 +39,8 @@ async function update () {
     'libp2p/js-libp2p-half-closed-connection-upgrade',
     'ipld/js-ipld-torrent-info',
     'ipld/js-ipld-torrent-file',
-    'ipld/js-ipld-bencode'
+    'ipld/js-ipld-bencode',
+    'libp2p/js-libp2p-random-walk'
   ]
   const authKey = process.env.GITHUB_TOKEN
   if (!authKey) {
