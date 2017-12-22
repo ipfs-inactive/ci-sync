@@ -32,7 +32,14 @@ async function update () {
     'libp2p/js-p2pcat', // wip
     'ipfs/js-ipfs-merkle-dag', // deprecated
     'ipfs/js-docker-base', // no tests
-    'ipfs/js.ipfs.io' // no tests
+    'ipfs/js.ipfs.io', // no tests
+    // Stubs
+    'libp2p/js-libp2p-udp',
+    'libp2p/js-libp2p-udt',
+    'libp2p/js-libp2p-half-closed-connection-upgrade',
+    'ipld/js-ipld-torrent-info',
+    'ipld/js-ipld-torrent-file',
+    'ipld/js-ipld-bencode'
   ]
   const authKey = process.env.GITHUB_TOKEN
   if (!authKey) {
