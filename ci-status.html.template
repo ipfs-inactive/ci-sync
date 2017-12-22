@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+table {
+  width: 100%;
+  text-align: left;
+  color: white;
+  border-collapse: collapse;
+}
+
+a {
+  color: white;
+}
+
+td {
+  padding: 10px;
+}
+
+th {
+  color: black;
+}
+
+tr:hover {
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+tr.FAILING {
+  background-color: #FF1A00;
+}
+
+tr.MISSING {
+  background-color: #FF7400;
+}
+
+tr.PASSING_PR {
+  background-color: #4096EE;
+}
+
+tr.PASSING {
+  background-color: #6BBA70;
+}
+
+tr {
+  border-bottom: 1px solid black;
+}
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Repository</th>
+        <th>Jenkins / Master</th>
+        <th>Jenkins / PR</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ROWS}}
+    </tbody>
+  </table>
+</body>
+</html>
