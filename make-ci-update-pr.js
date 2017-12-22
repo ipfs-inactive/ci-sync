@@ -24,7 +24,7 @@
       await printAndRun(`cd ${name} && git commit -m "Updating CI files" -m "This commit updates all CI scripts to the latest version"`)
       await printAndRun(`cd ${name} && git push origin automatic-ci-script-update --force`)
       console.log(`Opening PR view for ${repo}`)
-      // opn(`https://github.com/${owner}/${name}/compare/automatic-ci-script-update?expand=1`)
+      opn(`https://github.com/${owner}/${name}/compare/automatic-ci-script-update?expand=1`)
     }
     await printAndRun(`rm -rf ${name}`)
   }
