@@ -1,3 +1,5 @@
+console.log('Temporary disabled as its actions are destructive')
+process.exit(0)
 (async () => {
   const opn = require('opn')
   const exec = require('execa')
