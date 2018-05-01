@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+html, body {
+  margin: 0px;
+  padding: 0px;
+  font-family: sans-serif;
+  color: white;
+  background-color: #073A53;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+table {
+  width: 90%;
+  margin: 50px auto;
+  text-align: left;
+  color: #F1F9FA;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+a {
+  color: #F1F9FA;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  color: white;
+  text-align: center;
+  padding-bottom: 15px;
+  background-color: #073A53;
+}
+
+tr:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+td.failing {
+  background-color: #E9502F;
+}
+
+td.passing {
+  background-color: #6BC4CE;
+}
+
+tr {
+}
+  </style>
+</head>
+<body>
+  <h1>IPFS Repository Dashboard</h1>
+  {{ if not .Repositories }}
+    <h2>Currently waiting for data to get populated...</h2>
+    <h3>The page will automatically refresh</h3>
+    <script>
+      setTimeout(() => {
+        window.location.href = window.location.href
+      }, 1000)
+    </script>
+  {{ else }}
+    <table>
+      <thead>
+        <tr>
+          <th>Repository</th>
+          <th>Has Jenkins?</th>
+          <th>Is Jenkins Master Passing?</th>
+          <th>Has Circle?</th>
+          <th>Has Travis?</th>
+          <th>Has AppVeyor?</th>
+          <th>Has CI Team?</th>
+          <th>Right access for CI team?</th>
+          <th>Has Branch Protection?</th>
+          <th>Last Checked</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .Repositories }}
+          <tr>
+            <td class="{{ if .PassesChecks}}passing{{else}}failing{{end}}">
+              <a href="https://github.com/{{ .FullName }}" target="_blank">
+                {{ .FullName }}
+              </a>
+            </td>
+            <td class="{{ if .HasJenkins }}passing{{else}}failing{{end}}">
+              <a href="{{ .Links.Jenkins }}" target="_blank">
+                {{ .HasJenkins }}
+              </a>
+            </td>
+            <td class="{{ if .IsJenkinsMasterPassing }}passing{{else}}failing{{end}}">
+              <a href="{{ .Links.JenkinsMaster }}" target="_blank">
+                {{ .IsJenkinsMasterPassing }}
+              </a>
+            </td>
+            <td class="{{ if .HasCircle }}failing{{else}}passing{{end}}">{{ .HasCircle }}</td>
+            <td class="{{ if .HasTravis }}failing{{else}}passing{{end}}">{{ .HasTravis }}</td>
+            <td class="{{ if .HasAppVeyor }}failing{{else}}passing{{end}}">{{ .HasAppVeyor }}</td>
+            <td class="{{ if .HasCITeam }}passing{{else}}failing{{end}}">
+              <a href="{{ .Links.GithubCollaborators }}" target="_blank">
+                {{ .HasCITeam }}
+              <a/>
+            </td>
+            <td class="{{ if .CITeamRightPermissions }}passing{{else}}failing{{end}}">
+              <a href="{{ .Links.GithubCollaborators }}" target="_blank">
+                {{ .CITeamRightPermissions }}
+              </a>
+            </td>
+            <td class="{{ if .HasBranchProtection }}passing{{else}}failing{{end}}">
+              <a href="{{ .Links.GithubBranchProtection }}" target="_blank">
+                {{ .HasBranchProtection }}
+              </a>
+            </td>
+            <td class="passing">{{ .LastCheckedPretty }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  {{ end }}
+</body>
+</html>
+
