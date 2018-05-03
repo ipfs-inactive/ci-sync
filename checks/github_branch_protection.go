@@ -45,10 +45,7 @@ func GithubBranchProtection(client *github.Client, repo *github.Repository) bool
 				RequireCodeOwnerReviews: false,
 			},
 			EnforceAdmins: true,
-			Restrictions: &github.BranchRestrictionsRequest{
-				Users: []string{},
-				Teams: []string{},
-			},
+			Restrictions:  nil,
 		}
 		ctx := context.Background()
 		_, res, err := client.Repositories.UpdateBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master", preq)
