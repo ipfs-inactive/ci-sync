@@ -173,8 +173,10 @@ func main() {
 					panic(err)
 				}
 				for _, repo := range repos {
+					// Don't check archived repos
 					// Only use javascript repos for now
-					if strings.HasPrefix(repo.GetName(), "js-") {
+					if !repo.GetArchived() && strings.HasPrefix(repo.GetName(), "js-") {
+
 						allRepos = append(allRepos, repo)
 					}
 				}
