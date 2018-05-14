@@ -65,6 +65,7 @@ func GithubBranchProtection(client *github.Client, repo *github.Repository) bool
 				"jacobheun",
 				"achingbrain",
 				"alanshaw",
+				"vasco-santos",
 			},
 			Teams: []string{},
 		},
