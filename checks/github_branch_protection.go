@@ -33,45 +33,46 @@ func GithubBranchProtection(client *github.Client, repo *github.Repository) bool
 	// // TODO should check individual rules to see if they are correct
 	// if !hasProtection {
 	// Fix protection
-	preq := &github.ProtectionRequest{
-		RequiredStatusChecks: &github.RequiredStatusChecks{
-			Strict:   true,
-			Contexts: []string{},
-			// Contexts: []string{"continuous-integration/jenkins/pr-merge"},
-		},
-		RequiredPullRequestReviews: nil,
-		// RequiredPullRequestReviews: &github.PullRequestReviewsEnforcementRequest{
-		// 	DismissalRestrictionsRequest: &github.DismissalRestrictionsRequest{
-		// 		Users: &[]string{},
-		// 		Teams: &[]string{},
-		// 	},
-		// 	DismissStaleReviews: true,
-		// 	// TODO change this once we have code owners (dx wants to own tests for example)
-		// 	RequireCodeOwnerReviews: false,
-		// },
-		EnforceAdmins: false,
-		Restrictions: &github.BranchRestrictionsRequest{
-			Users: []string{
-				// From https://github.com/ipfs/pm/issues/600#issuecomment-385674334
-				"diasdavid",
-				"VictorBjelkholm",
-				"olizilla",
-				"hacdias",
-				"vmx",
-				"kumavis",
-				"wanderer",
-				"pgte",
-				"dignifiedquire",
-				"jacobheun",
-				"achingbrain",
-				"alanshaw",
-				"vasco-santos",
-			},
-			Teams: []string{},
-		},
-	}
+	// preq := &github.ProtectionRequest{
+	// 	RequiredStatusChecks: &github.RequiredStatusChecks{
+	// 		Strict:   true,
+	// 		Contexts: []string{},
+	// 		// Contexts: []string{"continuous-integration/jenkins/pr-merge"},
+	// 	},
+	// 	RequiredPullRequestReviews: nil,
+	// 	// RequiredPullRequestReviews: &github.PullRequestReviewsEnforcementRequest{
+	// 	// 	DismissalRestrictionsRequest: &github.DismissalRestrictionsRequest{
+	// 	// 		Users: &[]string{},
+	// 	// 		Teams: &[]string{},
+	// 	// 	},
+	// 	// 	DismissStaleReviews: true,
+	// 	// 	// TODO change this once we have code owners (dx wants to own tests for example)
+	// 	// 	RequireCodeOwnerReviews: false,
+	// 	// },
+	// 	EnforceAdmins: false,
+	// 	Restrictions: &github.BranchRestrictionsRequest{
+	// 		Users: []string{
+	// 			// From https://github.com/ipfs/pm/issues/600#issuecomment-385674334
+	// 			"diasdavid",
+	// 			"VictorBjelkholm",
+	// 			"olizilla",
+	// 			"hacdias",
+	// 			"vmx",
+	// 			"kumavis",
+	// 			"wanderer",
+	// 			"pgte",
+	// 			"dignifiedquire",
+	// 			"jacobheun",
+	// 			"achingbrain",
+	// 			"alanshaw",
+	// 			"vasco-santos",
+	// 		},
+	// 		Teams: []string{},
+	// 	},
+	// }
 	ctx := context.Background()
-	_, res, err := client.Repositories.UpdateBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master", preq)
+	res, err := client.Repositories.RemoveBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master")
+	// _, res, err := client.Repositories.UpdateBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master", preq)
 	if res.StatusCode == 404 {
 		log.Println(res.String())
 		log.Println("Repo missing master branch???")
