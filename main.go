@@ -8,12 +8,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/bradfitz/slice"
@@ -25,6 +25,7 @@ import (
 )
 
 type RepositoryStatus struct {
+	ID       int64
 	FullName string
 	Links    struct {
 		Jenkins                string
@@ -65,6 +66,7 @@ func GetRateLimitStatus(client *github.Client) string {
 func CheckRepo(client *github.Client, repo *github.Repository) RepositoryStatus {
 	status := RepositoryStatus{}
 	status.FullName = repo.GetFullName()
+	status.ID = repo.GetID()
 
 	// status.Links
 	orgName := repo.GetOwner().GetLogin()
@@ -175,8 +177,12 @@ func main() {
 				for _, repo := range repos {
 					// Don't check archived repos
 					// Only use javascript repos for now
-					if !repo.GetArchived() && strings.HasPrefix(repo.GetName(), "js-") {
-
+					// if !repo.GetArchived() && strings.HasPrefix(repo.GetName(), "js-") {
+					// if !repo.GetArchived() {
+					fmt.Printf("https://github.com/%s/%s\n", org, repo.GetName())
+					// isCodeRepo := strings.HasPrefix(repo.GetName(), "go-") || strings.HasPrefix(repo.GetName(), "js-")
+					isCodeRepo := true
+					if !repo.GetArchived() && isCodeRepo {
 						allRepos = append(allRepos, repo)
 					}
 				}

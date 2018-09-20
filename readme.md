@@ -1,5 +1,5 @@
-## repo-defaults
-> Tool for checking and fixing repositories from Protocol Labs to adher to our standard
+## ci-sync dashboard
+> CI dashboard for Protocol Labs projects
 
 - Jenkins for CI if exists + passing
   - Means removal of any other CIs if they exists
