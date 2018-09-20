@@ -16,9 +16,12 @@ h1, h2, h3 {
   text-align: center;
 }
 
-table {
+#wrapper {
   width: 90%;
   margin: 50px auto;
+}
+
+table {
   text-align: left;
   color: #F1F9FA;
   border-collapse: collapse;
@@ -54,7 +57,8 @@ td.passing {
   background-color: #6BC4CE;
 }
 
-tr {
+#filters {
+  margin-bottom: 40px;
 }
   </style>
 </head>
@@ -66,66 +70,137 @@ tr {
     <script>
       setTimeout(() => {
         window.location.href = window.location.href
-      }, 1000)
+      }, 1000 * 10)
     </script>
   {{ else }}
-    <table>
-      <thead>
-        <tr>
-          <th>Repository</th>
-          <th>Has Jenkins?</th>
-          <th>Is Jenkins Master Passing?</th>
-          <th>Has Circle?</th>
-          <th>Has Travis?</th>
-          <th>Has AppVeyor?</th>
-          <th>Has CI Team?</th>
-          <th>Right access for CI team?</th>
-          <th>Has Branch Protection?</th>
-          <th>Last Checked</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{ range .Repositories }}
+    <div id="wrapper">
+      <div id="filters">
+        <div><strong>Filters</strong></div>
+        <label>
+          Organization:
+          <input type="text" placeholder="libp2p" id="organization">
+        </label>
+      </div>
+      <table>
+        <thead>
           <tr>
-            <td class="{{ if .PassesChecks}}passing{{else}}failing{{end}}">
-              <a href="https://github.com/{{ .FullName }}" target="_blank">
-                {{ .FullName }}
-              </a>
-            </td>
-            <td class="{{ if .HasJenkins }}passing{{else}}failing{{end}}">
-              <a href="{{ .Links.Jenkins }}" target="_blank">
-                {{ .HasJenkins }}
-              </a>
-            </td>
-            <td class="{{ if .IsJenkinsMasterPassing }}passing{{else}}failing{{end}}">
-              <a href="{{ .Links.JenkinsMaster }}" target="_blank">
-                {{ .IsJenkinsMasterPassing }}
-              </a>
-            </td>
-            <td class="{{ if .HasCircle }}failing{{else}}passing{{end}}">{{ .HasCircle }}</td>
-            <td class="{{ if .HasTravis }}failing{{else}}passing{{end}}">{{ .HasTravis }}</td>
-            <td class="{{ if .HasAppVeyor }}failing{{else}}passing{{end}}">{{ .HasAppVeyor }}</td>
-            <td class="{{ if .HasCITeam }}passing{{else}}failing{{end}}">
-              <a href="{{ .Links.GithubCollaborators }}" target="_blank">
-                {{ .HasCITeam }}
-              <a/>
-            </td>
-            <td class="{{ if .CITeamRightPermissions }}passing{{else}}failing{{end}}">
-              <a href="{{ .Links.GithubCollaborators }}" target="_blank">
-                {{ .CITeamRightPermissions }}
-              </a>
-            </td>
-            <td class="{{ if .HasBranchProtection }}passing{{else}}failing{{end}}">
-              <a href="{{ .Links.GithubBranchProtection }}" target="_blank">
-                {{ .HasBranchProtection }}
-              </a>
-            </td>
-            <td class="passing">{{ .LastCheckedPretty }}</td>
+            <th>Repository</th>
+            <th>Has Jenkins?</th>
+            <th>Is Jenkins Master Passing?</th>
+            <th>Has Circle?</th>
+            <th>Has Travis?</th>
+            <th>Has AppVeyor?</th>
+            <th>Has CI Team?</th>
+            <th>Right access for CI team?</th>
+            <th>Has Branch Protection?</th>
+            <th>Last Checked</th>
           </tr>
-        {{ end }}
-      </tbody>
-    </table>
+        </thead>
+        <tbody id="repositories">
+          {{ range .Repositories }}
+            <tr class="repository" title="{{ .FullName }}" id="{{ .ID }}">
+              <td class="{{ if .PassesChecks}}passing{{else}}failing{{end}}">
+                <a href="https://github.com/{{ .FullName }}" target="_blank">
+                  {{ .FullName }}
+                </a>
+              </td>
+              <td class="{{ if .HasJenkins }}passing{{else}}failing{{end}}">
+                <a href="{{ .Links.Jenkins }}" target="_blank">
+                  {{ .HasJenkins }}
+                </a>
+              </td>
+              <td class="{{ if .IsJenkinsMasterPassing }}passing{{else}}failing{{end}}">
+                <a href="{{ .Links.JenkinsMaster }}" target="_blank">
+                  {{ .IsJenkinsMasterPassing }}
+                </a>
+              </td>
+              <td class="{{ if .HasCircle }}failing{{else}}passing{{end}}">{{ .HasCircle }}</td>
+              <td class="{{ if .HasTravis }}failing{{else}}passing{{end}}">{{ .HasTravis }}</td>
+              <td class="{{ if .HasAppVeyor }}failing{{else}}passing{{end}}">{{ .HasAppVeyor }}</td>
+              <td class="{{ if .HasCITeam }}passing{{else}}failing{{end}}">
+                <a href="{{ .Links.GithubCollaborators }}" target="_blank">
+                  {{ .HasCITeam }}
+                <a/>
+              </td>
+              <td class="{{ if .CITeamRightPermissions }}passing{{else}}failing{{end}}">
+                <a href="{{ .Links.GithubCollaborators }}" target="_blank">
+                  {{ .CITeamRightPermissions }}
+                </a>
+              </td>
+              <td class="{{ if .HasBranchProtection }}passing{{else}}failing{{end}}">
+                <a href="{{ .Links.GithubBranchProtection }}" target="_blank">
+                  {{ .HasBranchProtection }}
+                </a>
+              </td>
+              <td class="passing">{{ .LastCheckedPretty }}</td>
+            </tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
   {{ end }}
+  <script>
+    const $repositories = document.querySelectorAll('.repository')
+    const repositories = []
+    $repositories.forEach((repo) => {
+      const id = repo.getAttribute('id')
+      const fullName = repo.getAttribute('title')
+      const splitted = fullName.split('/')
+      const org = splitted[0].toLowerCase()
+      const name = splitted[1].toLowerCase()
+
+      const repository = {
+        id,
+        fullName,
+        name,
+        org,
+        visible: true
+      }
+      repositories.push(repository)
+    })
+    let delayTimeoutId
+    document.querySelector('#organization').addEventListener('input', (e) => {
+      if (delayTimeoutId) {
+        clearTimeout(delayTimeoutId)
+        delayTimeoutId = undefined
+      }
+      const targetValue = e.target.value.trim().toLowerCase()
+      delayTimeoutId = setTimeout(() => {
+        const listItemsToHide = []
+        // Check if any repository is showing, if none, hide the entire table
+        repositories.forEach((repo) => {
+          // no term, show everything
+          if (targetValue === "") {
+            // only need to show repos that are not already visible
+            if (!repo.visible) {
+              document.getElementById(repo.id).style.display = 'table-row'
+              repo.visible = true
+              return
+            }
+          }
+          // not a hit but it's visible
+          if (repo.org !== targetValue && repo.visible) {
+            document.getElementById(repo.id).style.display = 'none'
+            repo.visible = false
+            return
+          }
+          // a hit but it's not visible yet
+          if (repo.org === targetValue && !repo.visible) {
+            // show it
+            document.getElementById(repo.id).style.display = 'table-row'
+            repo.visible = true
+            return
+          }
+        })
+        const hasVisibleRepositories = repositories.filter(r => r.visible).length > 0
+        if (hasVisibleRepositories) {
+            document.querySelector('table').style.display = 'block'
+        } else {
+            document.querySelector('table').style.display = 'none'
+        }
+      }, 500)
+    })
+  </script>
 </body>
 </html>
 
