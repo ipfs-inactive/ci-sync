@@ -22,9 +22,12 @@ h1, h2, h3 {
 }
 
 table {
+  width: 100%;
+  margin: 0 auto;
   text-align: left;
   color: #F1F9FA;
   border-collapse: collapse;
+  table-layout: fixed;
   background-color: white;
 }
 
@@ -46,7 +49,6 @@ th {
 
 tr:hover {
   opacity: 0.5;
-  cursor: pointer;
 }
 
 td.failing {
@@ -80,6 +82,9 @@ td.passing {
           Organization:
           <input type="text" placeholder="libp2p" id="organization">
         </label>
+        <div>
+          Currently visible repositories: <span id="visible-repositories">{{ .Repositories | len }}</span>
+        </div>
       </div>
       <table>
         <thead>
@@ -167,37 +172,50 @@ td.passing {
       const targetValue = e.target.value.trim().toLowerCase()
       delayTimeoutId = setTimeout(() => {
         const listItemsToHide = []
-        // Check if any repository is showing, if none, hide the entire table
-        repositories.forEach((repo) => {
-          // no term, show everything
-          if (targetValue === "") {
-            // only need to show repos that are not already visible
+        // if empty value, show all
+        if (targetValue === "") {
+          repositories.forEach((repo) => {
             if (!repo.visible) {
+              document.getElementById(repo.id).style.display = 'table-row'
+              repo.visible = true
+            }
+          })
+        } else {
+          // Check if any repository is showing, if none, hide the entire table
+          repositories.forEach((repo) => {
+            // no term, show everything
+            if (targetValue === "") {
+              // only need to show repos that are not already visible
+              if (!repo.visible) {
+                document.getElementById(repo.id).style.display = 'table-row'
+                repo.visible = true
+                return
+              }
+            }
+            // not a hit but it's visible
+            if (repo.org !== targetValue && repo.visible) {
+              document.getElementById(repo.id).style.display = 'none'
+              repo.visible = false
+              return
+            }
+            // a hit but it's not visible yet
+            if (repo.org === targetValue && !repo.visible) {
+              // show it
               document.getElementById(repo.id).style.display = 'table-row'
               repo.visible = true
               return
             }
-          }
-          // not a hit but it's visible
-          if (repo.org !== targetValue && repo.visible) {
-            document.getElementById(repo.id).style.display = 'none'
-            repo.visible = false
-            return
-          }
-          // a hit but it's not visible yet
-          if (repo.org === targetValue && !repo.visible) {
-            // show it
-            document.getElementById(repo.id).style.display = 'table-row'
-            repo.visible = true
-            return
-          }
-        })
-        const hasVisibleRepositories = repositories.filter(r => r.visible).length > 0
+          })
+        }
+        const visibleRepositories = repositories.filter(r => r.visible).length
+        const hasVisibleRepositories = visibleRepositories > 0
+        console.log(hasVisibleRepositories)
         if (hasVisibleRepositories) {
-            document.querySelector('table').style.display = 'block'
+            document.querySelector('table').style.display = 'table'
         } else {
             document.querySelector('table').style.display = 'none'
         }
+        document.querySelector('#visible-repositories').innerText = visibleRepositories
       }, 500)
     })
   </script>
