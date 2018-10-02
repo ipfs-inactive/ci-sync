@@ -1,9 +1,6 @@
 package checks
 
 import (
-	"context"
-	"log"
-
 	"github.com/google/go-github/github"
 )
 
@@ -70,19 +67,19 @@ func GithubBranchProtection(client *github.Client, repo *github.Repository) bool
 	// 		Teams: []string{},
 	// 	},
 	// }
-	ctx := context.Background()
-	res, err := client.Repositories.RemoveBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master")
-	// _, res, err := client.Repositories.UpdateBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master", preq)
-	if res.StatusCode == 404 {
-		log.Println(res.String())
-		log.Println("Repo missing master branch???")
-		return false
-	}
-	if err != nil {
-		panic(err)
-	}
+	// ctx := context.Background()
+	// res, err := client.Repositories.RemoveBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master")
+	// // _, res, err := client.Repositories.UpdateBranchProtection(ctx, repo.GetOwner().GetLogin(), repo.GetName(), "master", preq)
+	// if res.StatusCode == 404 {
+	// 	log.Println(res.String())
+	// 	log.Println("Repo missing master branch???")
+	// 	return false
+	// }
+	// if err != nil {
+	// 	panic(err)
+	// }
 	// Call to check if it's been fixed now (should be!)
-	return true
+	return false
 	// return GithubBranchProtection(client, repo)
 	// }
 	// log.Print("Has protection? ", hasProtection)

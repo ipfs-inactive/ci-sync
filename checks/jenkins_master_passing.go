@@ -37,5 +37,6 @@ func JenkinsMasterPassing(repo *github.Repository) bool {
 	if err != nil {
 		panic(err)
 	}
+	// If it's not passing and has Jenkinsfile, should open a issue about it
 	return buildRes.Result == "SUCCESS"
 }

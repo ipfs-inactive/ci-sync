@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bradfitz/slice"
@@ -162,8 +163,8 @@ func main() {
 		repositories = []RepositoryStatus{}
 		var allRepos []*github.Repository
 		// Organizations to get repositories from
-		orgs := []string{"ipfs", "libp2p", "ipld", "multiformats", "ipfs-shipyard"}
-		// orgs := []string{"multiformats"}
+		// orgs := []string{"ipfs", "libp2p", "ipld", "multiformats", "ipfs-shipyard"}
+		orgs := []string{"multiformats"}
 		for _, org := range orgs {
 			opt := &github.RepositoryListByOrgOptions{
 				ListOptions: github.ListOptions{PerPage: 100},
@@ -181,7 +182,8 @@ func main() {
 					// if !repo.GetArchived() {
 					fmt.Printf("https://github.com/%s/%s\n", org, repo.GetName())
 					// isCodeRepo := strings.HasPrefix(repo.GetName(), "go-") || strings.HasPrefix(repo.GetName(), "js-")
-					isCodeRepo := true
+					isCodeRepo := strings.HasPrefix(repo.GetName(), "js-")
+					// isCodeRepo := true
 					if !repo.GetArchived() && isCodeRepo {
 						allRepos = append(allRepos, repo)
 					}

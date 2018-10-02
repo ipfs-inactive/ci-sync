@@ -10,3 +10,14 @@
 - Syncs settings for Github Branch Protection
 - Submits PR for any updates that are required
   - If PR already exists, update that one instead of creating new one
+
+## Automatic Changes are bad, should submit PRs for changes
+
+## Should also check existance of badges in README
+- no
+  - circleci
+  - coveralls
+  - travis
+- yes
+  - jenkins
+  - codecov
