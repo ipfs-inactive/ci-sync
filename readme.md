@@ -1,6 +1,6 @@
 ## This repository has been archived!
 
-This repository has been archived and possibly moved out of the  organization. This may have happened for one or several reasons:
+This repository has been archived and possibly moved out of the IPFS organization. This may have happened for one or several reasons:
 
 * The code or content is unmaintained, might be broken and should not be used.
 * The content is outdated and may mislead the readers.
